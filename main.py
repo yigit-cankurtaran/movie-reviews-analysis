@@ -37,3 +37,47 @@ def preprocess(text):
 
 positive_tagged = [preprocess(r) for r in positive_reviews]
 negative_tagged = [preprocess(r) for r in negative_reviews]
+
+#  Compute word frequencies, create a word cloud
+all_words = [t for tagged_review in positive_tagged + negative_tagged
+             for t in tagged_review]
+all_words = FreqDist(all_words)
+
+# print(all_words.most_common(10))
+#  Works. Prints the 10 most common words in the corpus
+
+# Train a simple sentiment analysis using Naive Bayes Classifier
+
+
+def extract_features(review):
+    return {word: (word in set(review)) for word in all_words}
+
+
+positive_features = [(extract_features(r), 'Positive')
+                     for r in positive_tagged]
+negative_features = [(extract_features(r), 'Negative')
+                     for r in negative_tagged]
+all_features = positive_features + negative_features
+
+# Split the data into training and testing datasets
+threshold = 0.8
+split_point = int(threshold * len(all_features))
+train_data, test_data = all_features[:split_point], all_features[split_point:]
+
+# Train the classifier
+classifier = NaiveBayesClassifier.train(train_data)
+print("Accuracy of the classifier is: ", accuracy(classifier, test_data))
+
+# Test the classifier
+input_reviews = [
+    "It is an amazing movie",
+    "This is a dull movie. I would never recommend it to anyone.",
+    "The cinematography is pretty great in this movie",
+    "The direction was terrible and the story was all over the place"
+    "The movie was a great waste of time"
+]
+
+print("Predictions:")
+for review in input_reviews:
+    review = preprocess(review)
+    print(f'Sentiment: {classifier.classify(extract_features(review))}')
