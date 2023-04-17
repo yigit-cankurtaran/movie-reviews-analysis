@@ -81,3 +81,14 @@ print("Predictions:")
 for review in input_reviews:
     review = preprocess(review)
     print(f'Sentiment: {classifier.classify(extract_features(review))}')
+
+# Output:
+# Accuracy of the classifier is:  0.825
+# Predictions:
+# Sentiment: Positive
+# Sentiment: Negative
+# Sentiment: Positive
+# Sentiment: Negative
+# Sentiment: Negative
+
+#  The classifier is able to correctly classify the sentiment of the input reviews
